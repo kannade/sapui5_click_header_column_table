@@ -15,6 +15,7 @@ sap.ui.define([
 			var oModel = new JSONModel(jQuery.sap.getModulePath("sap.ui.demo.mock", "/products.json"));
 			this.getView().setModel(oModel);
 
+			//создадим всплывающее окошко
 			if (!this._oResponsivePopover) {
 				this._oResponsivePopover = sap.ui.xmlfragment("sap.m.sample.Table.TableSorter", this);
 				//this._oResponsivePopover.setModel(this.getView().getModel());
@@ -23,7 +24,8 @@ sap.ui.define([
 
 		onAfterRendering: function () {
 			var oTab = this.getView().byId("idProductsTable");
-
+			
+			//после отрисовки таблицы возьмем все колонки и добавим им событие click
 			oTab.addEventDelegate({
 				"onAfterRendering": function (id) {
 
@@ -43,7 +45,7 @@ sap.ui.define([
 
 		onClick: function (oID) {
 			var that = this;
-			$("#" + oID).click(function (oEvent) { //Attach Table Header Element Event
+			$("#" + oID).click(function (oEvent) { //добавим событие "click" к колонке
 				var oTarget = oEvent.currentTarget; //Get hold of Header Element
 				var oLabelText = oTarget.childNodes[0].textContent; //Get Column Header text
 				var oIndex = oTarget.id.slice(-1); //Get the column Index
@@ -52,9 +54,10 @@ sap.ui.define([
 				//var oModel = oTable.getModel().getProperty("/ProductCollection"); //Get Hold of Table Model Values
 				//var oKeys = Object.keys(oModel[0]); //Get Hold of Model Keys to filter the value
 				//	oView.getModel().setProperty("/bindingValue", sap.ui.getCore().byId(oEvent.currentTarget.id).data("key")); //Save the key value to property
-				oView._bindingValue = sap.ui.getCore().byId(oEvent.currentTarget.id).data("key");
+				oView._bindingValue = sap.ui.getCore().byId(oEvent.currentTarget.id).data("key"); // название поля в моделе
 				that._oResponsivePopover.openBy(oEvent.target);
 
+				// Можно добавить разные css стили для сортировок.
 				// if (sap.ui.Device.browser.name === "cr") {
 				// 	if ($("#" + oEvent.currentTarget.id).hasClass("descending")) {
 				// 		$("#" + oEvent.currentTarget.id).removeClass("descending");
@@ -95,7 +98,7 @@ sap.ui.define([
 			this._oResponsivePopover.close();
 		},
 
-		onAscending: function (evt, evt2) {
+		onAscending: function (evt) {
 			var oTable = this.getView().byId("idProductsTable");
 			var oItems = oTable.getBinding("items");
 			//	var oBindingPath = this.getView().getModel().getProperty("/bindingValue");
@@ -105,7 +108,7 @@ sap.ui.define([
 			this._oResponsivePopover.close();
 		},
 
-		onDescending: function (evt, evt2) {
+		onDescending: function (evt) {
 			var oTable = this.getView().byId("idProductsTable");
 			var oItems = oTable.getBinding("items");
 			//var oBindingPath = this.getView().getModel().getProperty("/bindingValue");
